@@ -614,3 +614,9 @@ routes/web.php
 ## Licencia
 
 Proyecto academico desarrollado sobre Laravel.
+
+## Datos Academicos
+
+Universidad Continental
+
+Curso: Ingenieria Web
