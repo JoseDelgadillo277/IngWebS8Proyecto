@@ -1,3 +1,4 @@
+{{-- Formulario para actualizar informacion de un paciente. --}}
 @extends('layouts.app')
 
 @section('hide_default_nav', true)

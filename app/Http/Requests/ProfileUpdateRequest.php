@@ -16,6 +16,7 @@ class ProfileUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
+            // Nombre y correo del perfil del usuario autenticado.
             'name' => ['required', 'string', 'max:255'],
             'email' => [
                 'required',

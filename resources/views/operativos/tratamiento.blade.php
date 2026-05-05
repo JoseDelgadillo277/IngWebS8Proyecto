@@ -1,3 +1,4 @@
+{{-- Proceso operativo de tratamiento: seguimiento de historias activas. --}}
 @extends('layouts.app')
 
 @section('hide_default_nav', true)

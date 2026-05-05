@@ -35,6 +35,7 @@ class Paciente extends Model
     ];
 
     protected $casts = [
+        // Permite trabajar fecha_nacimiento como fecha de Laravel.
         'fecha_nacimiento' => 'date',
     ];
 
@@ -44,6 +45,7 @@ class Paciente extends Model
 
     public function citas()
     {
+        // Un paciente puede tener varias citas.
         return $this->hasMany(\App\Models\Cita::class);
     }
 
@@ -59,6 +61,7 @@ class Paciente extends Model
 
     public function getNombreCompletoAttribute(): string
     {
+        // Atributo calculado para mostrar nombre y apellido juntos.
         return trim(($this->nombre ?? '') . ' ' . ($this->apellido ?? ''));
     }
 

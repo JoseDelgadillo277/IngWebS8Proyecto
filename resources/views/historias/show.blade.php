@@ -1,3 +1,4 @@
+{{-- Detalle de historia clinica: datos del paciente, diagnostico y notas. --}}
 @extends('layouts.app')
 
 @section('hide_default_nav', true)

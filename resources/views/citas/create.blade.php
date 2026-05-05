@@ -1,3 +1,4 @@
+{{-- Formulario para registrar una nueva cita medica. --}}
 @extends('layouts.app')
 
 @section('hide_default_nav', true)

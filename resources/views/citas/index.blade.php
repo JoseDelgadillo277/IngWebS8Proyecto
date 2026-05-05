@@ -1,3 +1,4 @@
+{{-- Listado de citas: filtros, estados y acciones rapidas de atencion. --}}
 @extends('layouts.app')
 
 @section('hide_default_nav', true)

@@ -38,6 +38,7 @@ class PagoController extends Controller
     /** 💾 Guardar pago en BD */
     public function store(Request $request)
     {
+        // Valida datos del comprobante y del medio de pago.
         $validated = $request->validate([
             'paciente_id'       => ['required', 'exists:pacientes,id'],
             'documento_tipo'    => ['required', 'string', 'max:12'],
@@ -64,6 +65,7 @@ class PagoController extends Controller
     /** 📋 Listar pagos registrados */
     public function index(Request $request)
     {
+        // Incluye paciente y usuario que registro el pago para mostrar el historial completo.
         $query = Pago::with('paciente', 'usuario')
             ->orderBy('fecha', 'desc');
 

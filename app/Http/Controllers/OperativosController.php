@@ -28,6 +28,7 @@ class OperativosController extends Controller
      */
     public function diagnostico(Request $request)
     {
+        // Consulta historias con relaciones para mostrar paciente, odontologo y ultima nota.
         $q = HistoriaClinica::with([
             'paciente',
             'odontologo',
@@ -63,8 +64,10 @@ class OperativosController extends Controller
      */
     public function tratamiento(Request $request)
     {
+        // Reune filtros del formulario para mantenerlos al paginar.
         $filters = $request->only(['buscar', 'odontologo_id', 'estado', 'desde', 'hasta']);
 
+        // Lista historias en tratamiento o abiertas, con busqueda por paciente.
         $q = HistoriaClinica::with([
             'paciente',
             'odontologo',
@@ -112,10 +115,12 @@ class OperativosController extends Controller
      */
     public function seguimiento(Request $request)
     {
+        // Filtros opcionales para revisar citas atendidas o en seguimiento.
         $fecha        = $request->input('fecha');
         $estado       = $request->input('estado');
         $odontologoId = $request->input('odontologo_id');
 
+        // Carga citas y sus relaciones para el tablero de seguimiento.
         $citas = Cita::with(['paciente', 'odontologo'])
             ->when($fecha,        fn($q) => $q->whereDate('fecha', $fecha))
             ->when($odontologoId, fn($q) => $q->where('odontologo_id', $odontologoId))

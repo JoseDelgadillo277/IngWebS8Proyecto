@@ -1,3 +1,4 @@
+{{-- Formulario para registrar un nuevo paciente. --}}
 @extends('layouts.app')
 
 @section('hide_default_nav', true)

@@ -1,3 +1,4 @@
+{{-- Formulario independiente para modificar datos de una cita existente. --}}
 <!DOCTYPE html>
 <html lang="es">
 

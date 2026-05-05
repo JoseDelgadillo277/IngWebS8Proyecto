@@ -11,6 +11,7 @@ use App\Models\NotaClinica;
 class HistoriaClinica extends Model
 {
     // ✅ Nombre real de la tabla
+    // Tabla donde se guarda la historia clinica unica de cada paciente.
     protected $table = 'historias_clinicas';
 
     // ==============================
@@ -44,6 +45,7 @@ class HistoriaClinica extends Model
     // ⚙️ CONVERSIONES AUTOMÁTICAS
     // ==============================
     protected $casts = [
+        // Convierte columnas JSON/fecha a tipos comodos para PHP.
         'imagenes' => AsArrayObject::class,
         'consentimientos' => AsArrayObject::class,
         'fecha_apertura' => 'date',

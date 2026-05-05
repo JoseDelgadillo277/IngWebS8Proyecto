@@ -1,3 +1,4 @@
+{{-- Listado y busqueda de pacientes registrados. --}}
 @extends('layouts.app')
 
 @section('hide_default_nav', true)

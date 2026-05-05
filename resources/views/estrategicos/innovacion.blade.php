@@ -1,3 +1,4 @@
+{{-- Vista del proceso estrategico de innovacion. --}}
 @extends('layouts.app')
 @section('hide_default_nav', true)
 @section('title', 'Innovación y mejora')

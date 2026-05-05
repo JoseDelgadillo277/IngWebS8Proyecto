@@ -1,3 +1,4 @@
+{{-- Modulo de RRHH para acceder a configuraciones de personal. --}}
 @extends('layouts.app')
 
 @section('hide_default_nav', true)

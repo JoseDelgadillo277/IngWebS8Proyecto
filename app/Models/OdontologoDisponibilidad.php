@@ -7,8 +7,10 @@ use Carbon\Carbon;
 
 class OdontologoDisponibilidad extends Model
 {
+    // Tabla con los bloques semanales disponibles del odontologo.
     protected $table = 'odontologo_disponibilidades';
 
+    // Campos permitidos para crear o actualizar disponibilidad.
     protected $fillable = [
         'odontologo_id',
         'dia_semana',

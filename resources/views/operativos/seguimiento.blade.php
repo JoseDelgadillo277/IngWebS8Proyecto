@@ -1,3 +1,4 @@
+{{-- Proceso operativo de seguimiento: control de citas posteriores. --}}
 @extends('layouts.app')
 
 @section('hide_default_nav', true)

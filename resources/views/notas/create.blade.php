@@ -1,4 +1,5 @@
 {{-- resources/views/notas/create.blade.php --}}
+{{-- Registro de nota clinica asociada a una historia y opcionalmente a una cita. --}}
 @extends('layouts.app')
 
 @section('hide_default_nav', true)

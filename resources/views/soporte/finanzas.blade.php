@@ -1,3 +1,4 @@
+{{-- Modulo de soporte financiero con accesos a pagos. --}}
 @extends('layouts.app')
 @section('hide_default_nav', true)
 @section('title', 'Soporte · Finanzas')

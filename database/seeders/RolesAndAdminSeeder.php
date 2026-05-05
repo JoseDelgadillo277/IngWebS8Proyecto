@@ -10,14 +10,17 @@ use Illuminate\Support\Str;
 
 class RolesAndAdminSeeder extends Seeder
 {
+    /**
+     * Crea roles base y un usuario administrador inicial para probar el sistema.
+     */
     public function run(): void
     {
-        // 1) Crear roles base con guard_name = web
+        // 1) Crear roles base con guard_name = web.
         foreach (['admin', 'recepcionista', 'odontologo', 'asistente', 'paciente'] as $r) {
             Role::firstOrCreate(['name' => $r, 'guard_name' => 'web']);
         }
 
-        // 2) Crear/actualizar usuario administrador
+        // 2) Crear/actualizar usuario administrador.
         $admin = User::updateOrCreate(
             ['email' => 'admin@artedental.pe'],
             [
@@ -28,7 +31,7 @@ class RolesAndAdminSeeder extends Seeder
             ]
         );
 
-        // 3) Asignar rol admin (guard web)
+        // 3) Asignar rol admin (guard web).
         if (! $admin->hasRole('admin')) {
             $admin->assignRole('admin');
         }

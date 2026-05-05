@@ -8,10 +8,14 @@ use Illuminate\Validation\Rule;
 
 class PacienteController extends Controller
 {
+    /**
+     * Lista pacientes y permite buscar por datos personales o ubicacion.
+     */
     public function index(Request $request)
     {
         $q = trim((string) $request->input('q', ''));
 
+        // El filtro se aplica solo cuando el usuario escribe un termino de busqueda.
         $pacientes = Paciente::query()
             ->when($q !== '', function ($query) use ($q) {
                 $query->where(function ($qq) use ($q) {
@@ -36,6 +40,9 @@ class PacienteController extends Controller
         return view('pacientes.create');
     }
 
+    /**
+     * Valida y registra un nuevo paciente.
+     */
     public function store(Request $request)
     {
         $messages = [
@@ -61,6 +68,7 @@ class PacienteController extends Controller
             'direccion'        => ['nullable', 'string', 'max:160'],
         ], $messages);
 
+        // Si no llega direccion completa, se arma desde calle y numero.
         if (empty($data['direccion'])) {
             $calle  = trim((string)($data['calle'] ?? ''));
             $numero = trim((string)($data['numero'] ?? ''));
@@ -82,6 +90,9 @@ class PacienteController extends Controller
         return view('pacientes.edit', compact('paciente'));
     }
 
+    /**
+     * Actualiza los datos del paciente seleccionado.
+     */
     public function update(Request $request, Paciente $paciente)
     {
         $messages = [
@@ -107,6 +118,7 @@ class PacienteController extends Controller
             'direccion'        => ['nullable', 'string', 'max:160'],
         ], $messages);
 
+        // Mantiene una direccion legible aun cuando solo se ingresen calle y numero.
         if (empty($data['direccion'])) {
             $calle  = trim((string)($data['calle'] ?? $paciente->calle));
             $numero = trim((string)($data['numero'] ?? $paciente->numero));
@@ -125,6 +137,7 @@ class PacienteController extends Controller
 
     public function destroy(Paciente $paciente)
     {
+        // Elimina el registro usando route model binding de Laravel.
         $paciente->delete();
 
         return back()->with('ok', '⚠️ Paciente eliminado del registro.');

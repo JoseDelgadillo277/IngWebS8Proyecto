@@ -12,6 +12,9 @@ class UserController extends Controller
     /** Lista de roles permitidos en la app */
     private array $roles = ['admin', 'recepcionista', 'odontologo', 'asistente'];
 
+    /**
+     * Lista usuarios del sistema para administrarlos.
+     */
     public function index()
     {
         $users = User::latest()->paginate(12);
@@ -22,12 +25,14 @@ class UserController extends Controller
 
     public function create()
     {
+        // Se envia la lista de roles para el selector del formulario.
         $roles = $this->roles;
         return view('users.create', compact('roles'));
     }
 
     public function store(Request $request)
     {
+        // Valida datos de cuenta y obliga a escoger un rol permitido.
         $data = $request->validate([
             'name'     => ['required', 'string', 'max:150'],
             'email'    => ['required', 'email', 'max:150', 'unique:users,email'],
@@ -41,7 +46,7 @@ class UserController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-        // Asignar rol
+        // Asigna el rol usando Spatie Permission cuando esta disponible.
         if (method_exists($user, 'assignRole')) {
             $user->assignRole($data['role']);
         }
@@ -51,12 +56,14 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
+        // Formulario para editar datos basicos y rol del usuario.
         $roles = $this->roles;
         return view('users.edit', compact('user', 'roles'));
     }
 
     public function update(Request $request, User $user)
     {
+        // La regla unique ignora al usuario actual para permitir conservar su email.
         $data = $request->validate([
             'name'     => ['required', 'string', 'max:150'],
             'email'    => ['required', 'email', 'max:150', Rule::unique('users', 'email')->ignore($user->id)],
@@ -79,6 +86,7 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        // Elimina la cuenta seleccionada desde el mantenimiento de usuarios.
         $user->delete();
         return back()->with('ok', 'Usuario eliminado.');
     }

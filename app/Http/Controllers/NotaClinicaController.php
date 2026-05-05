@@ -47,6 +47,7 @@ class NotaClinicaController extends Controller
      */
     public function store(Request $request, HistoriaClinica $historia)
     {
+        // No se permite registrar notas sobre historias cerradas.
         if ($historia->estado === 'cerrada') {
             throw ValidationException::withMessages([
                 'historia' => 'La historia clínica está cerrada. Ábrela antes de registrar notas.',
@@ -90,6 +91,7 @@ class NotaClinicaController extends Controller
         }
 
         // Crear nota
+        // Se crea manualmente para dejar claro que pertenece a esta historia.
         $nota = new NotaClinica();
         $nota->historia_clinica_id = $historia->id;
         $nota->cita_id       = $citaId;

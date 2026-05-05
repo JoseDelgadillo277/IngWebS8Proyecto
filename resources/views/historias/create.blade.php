@@ -1,3 +1,4 @@
+{{-- Formulario inicial para abrir la historia clinica de un paciente. --}}
 @extends('layouts.app')
 
 @section('hide_default_nav', true)

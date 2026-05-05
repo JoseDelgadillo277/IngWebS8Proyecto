@@ -1,3 +1,4 @@
+{{-- Historial de pagos con filtros por paciente y fechas. --}}
 @extends('layouts.app')
 @section('hide_default_nav', true)
 @section('title', 'Pagos registrados')

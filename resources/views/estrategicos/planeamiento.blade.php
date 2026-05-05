@@ -1,3 +1,4 @@
+{{-- Vista del proceso estrategico de planeamiento. --}}
 @extends('layouts.app')
 @section('hide_default_nav', true)
 @section('title', 'Planeamiento estratégico')

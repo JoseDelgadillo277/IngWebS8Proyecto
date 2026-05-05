@@ -18,6 +18,7 @@ class OdontologoConfigController extends Controller
      */
     public function index()
     {
+        // Busca profesionales por rol o por perfil para llenar el selector principal.
         // Mostrar usuarios que tengan rol odontologo/asistente o que tengan perfil de odontólogo
         $odontologos = User::where(function ($q) {
             if (class_exists(\Spatie\Permission\Models\Role::class)) {
@@ -74,6 +75,7 @@ class OdontologoConfigController extends Controller
      */
     public function addDisponibilidad(Request $request)
     {
+        // Valida dia y horas antes de guardar el bloque fijo.
         $data = $request->validate([
             'odontologo_id' => ['required', 'exists:users,id'],
             'dia_semana'    => ['required', 'integer', Rule::in([1, 2, 3, 4, 5, 6, 7])],
@@ -97,6 +99,7 @@ class OdontologoConfigController extends Controller
      */
     public function delDisponibilidad(OdontologoDisponibilidad $bloque)
     {
+        // Guarda el usuario antes de borrar para volver al mismo filtro.
         $userId = $bloque->odontologo_id;
         $bloque->delete();
 
@@ -112,6 +115,7 @@ class OdontologoConfigController extends Controller
      */
     public function addAusencia(Request $request)
     {
+        // La ausencia se registra como dia completo usando fecha_inicio y fecha_fin iguales.
         $data = $request->validate([
             'odontologo_id' => ['required', 'exists:users,id'],
             'fecha'         => ['required', 'date'],
@@ -135,6 +139,7 @@ class OdontologoConfigController extends Controller
      */
     public function delAusencia(OdontologoAusencia $ausencia)
     {
+        // Guarda el usuario antes de borrar para regresar a su configuracion.
         $userId = $ausencia->odontologo_id;
         $ausencia->delete();
 

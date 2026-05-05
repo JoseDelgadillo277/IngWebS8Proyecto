@@ -1,3 +1,4 @@
+{{-- Menu del bloque de procesos estrategicos. --}}
 @extends('layouts.app')
 
 @section('title', 'Procesos Estratégicos')

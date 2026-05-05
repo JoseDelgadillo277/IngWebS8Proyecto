@@ -1,3 +1,4 @@
+{{-- Formulario para registrar pagos de pacientes. --}}
 @extends('layouts.app')
 @section('hide_default_nav', true)
 @section('title', 'Registrar Pago')

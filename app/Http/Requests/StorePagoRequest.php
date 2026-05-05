@@ -6,6 +6,9 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StorePagoRequest extends FormRequest
 {
+    /**
+     * Solo administradores y recepcionistas pueden registrar pagos.
+     */
     public function authorize(): bool
     {
         return $this->user()?->hasAnyRole(['admin', 'recepcionista']) ?? false;
@@ -13,6 +16,7 @@ class StorePagoRequest extends FormRequest
 
     public function rules(): array
     {
+        // Reglas del comprobante y pago antes de guardar en la base de datos.
         return [
             'paciente_id'      => ['required', 'exists:pacientes,id'],
             'documento_tipo'   => ['required', 'in:boleta,factura,recibo'],

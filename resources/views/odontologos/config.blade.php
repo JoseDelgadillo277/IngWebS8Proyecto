@@ -1,3 +1,4 @@
+{{-- Configuracion operativa de odontologos usada desde RRHH. --}}
 @extends('layouts.app')
 @section('hide_default_nav', true)
 @section('title', 'Configurar odontólogos')

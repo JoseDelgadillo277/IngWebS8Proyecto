@@ -42,6 +42,7 @@ class HistoriaClinicaController extends Controller
      */
     public function store(Request $request, Paciente $paciente)
     {
+        // Valida los datos clinicos principales antes de crear la historia.
         $data = $request->validate([
             'odontologo_id'           => 'nullable|exists:users,id',
             'fecha_apertura'          => 'nullable|date',
@@ -68,6 +69,7 @@ class HistoriaClinicaController extends Controller
             abort_unless($u && $u->hasRole('odontologo'), 422, 'El usuario seleccionado no es odontólogo.');
         }
 
+        // Si no se envia fecha, se usa la fecha actual y se abre la historia.
         $data['fecha_apertura'] = $data['fecha_apertura'] ?? now()->toDateString();
         $data['estado'] = 'abierta';
 
@@ -83,6 +85,7 @@ class HistoriaClinicaController extends Controller
      */
     public function update(Request $request, HistoriaClinica $historia)
     {
+        // Solo se actualizan campos clinicos definidos en esta lista blanca.
         $data = $request->validate([
             'odontologo_id'           => 'nullable|exists:users,id',
             'fecha_apertura'          => 'nullable|date',
@@ -119,6 +122,7 @@ class HistoriaClinicaController extends Controller
      */
     public function cerrar(HistoriaClinica $historia)
     {
+        // Cerrar bloquea nuevas atenciones hasta que se vuelva a abrir desde edicion.
         $historia->update(['estado' => 'cerrada']);
 
         return back()->with('ok', 'Historia clínica cerrada.');

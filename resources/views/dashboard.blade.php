@@ -1,3 +1,4 @@
+{{-- Vista principal: muestra las citas del dia y accesos del sistema. --}}
 @extends('layouts.app')
 
 @section('hide_default_nav', true)

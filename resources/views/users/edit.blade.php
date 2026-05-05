@@ -1,3 +1,4 @@
+{{-- Formulario independiente para editar usuario y rol. --}}
 <!doctype html>
 <html lang="es">
 

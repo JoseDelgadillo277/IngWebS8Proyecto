@@ -1,3 +1,4 @@
+{{-- Configuracion de odontologos: disponibilidad, ausencias y asistentes. --}}
 @extends('layouts.app')
 @section('hide_default_nav', true)
 @section('title', 'Configurar odontólogos')

@@ -26,6 +26,9 @@ use App\Http\Controllers\OperativosController;
 // Horarios fijos (RRHH)
 use App\Http\Controllers\HorarioController;
 
+// Este archivo conecta las URL del sistema con sus controladores.
+// La mayor parte del sistema queda dentro del middleware auth + roles.
+
 // Página raíz → dashboard
 Route::get('/', fn() => redirect()->route('dashboard'));
 
@@ -62,6 +65,7 @@ Route::middleware(['auth', 'role:admin|recepcionista|odontologo|asistente'])->gr
         ->except(['show'])
         ->parameters(['citas' => 'cita']);
 
+    // Acciones especiales del flujo de atencion de citas.
     Route::patch('citas/{cita}/reprogramar', [CitaController::class, 'reprogram'])->name('citas.reprogram');
     Route::patch('citas/{cita}/cancelar',    [CitaController::class, 'cancel'])->name('citas.cancel');
     Route::patch('citas/{cita}/checkin',     [CitaController::class, 'checkin'])->name('citas.checkin');
@@ -139,6 +143,7 @@ Route::middleware(['auth', 'role:admin|recepcionista|odontologo|asistente'])->gr
     //        HISTORIA CLÍNICA
     // ========================
     Route::prefix('pacientes')->group(function () {
+        // La historia se consulta desde el paciente porque es informacion clinica personal.
         Route::get('{paciente}/historia',       [HistoriaClinicaController::class, 'showByPaciente'])->name('historias.show');
         Route::get('{paciente}/historia/crear', [HistoriaClinicaController::class, 'create'])->name('historias.create');
         Route::post('{paciente}/historia',      [HistoriaClinicaController::class, 'store'])->name('historias.store');

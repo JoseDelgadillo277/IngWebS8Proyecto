@@ -1,3 +1,4 @@
+{{-- Formulario para crear usuarios internos y asignarles rol. --}}
 @extends('layouts.app')
 
 @section('hide_default_nav', true)

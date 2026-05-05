@@ -1,3 +1,4 @@
+{{-- Administracion de usuarios: listado, roles y acciones de mantenimiento. --}}
 @extends('layouts.app')
 
 @section('hide_default_nav', true)

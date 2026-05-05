@@ -1,3 +1,4 @@
+{{-- Modulo de soporte administrativo. --}}
 @extends('layouts.app')
 @section('hide_default_nav', true)
 @section('title', 'Soporte · Administración')

@@ -1,3 +1,4 @@
+{{-- Proceso operativo de diagnostico: historias clinicas filtradas. --}}
 @extends('layouts.app')
 
 @section('hide_default_nav', true)

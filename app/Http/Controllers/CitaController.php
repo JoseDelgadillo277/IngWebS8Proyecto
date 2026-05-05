@@ -18,8 +18,12 @@ use App\Models\OdontologoAsistente;
 
 class CitaController extends Controller
 {
+    /**
+     * Muestra el listado de citas con filtros por fecha, odontologo y estado.
+     */
     public function index(Request $request)
     {
+        // with() trae las relaciones necesarias para mostrar nombres sin consultas extra.
         $q = Cita::with(['paciente', 'odontologo'])
             ->when($request->filled('fecha'), fn($qq) => $qq->where('fecha', $request->fecha))
             ->when($request->filled('odontologo_id'), fn($qq) => $qq->where('odontologo_id', $request->odontologo_id))
@@ -38,6 +42,7 @@ class CitaController extends Controller
 
     public function create()
     {
+        // Datos necesarios para llenar los select del formulario de nueva cita.
         $pacientes   = Paciente::orderBy('apellido')->orderBy('nombre')->get();
         $odontologos = class_exists(\Spatie\Permission\Models\Role::class)
             ? User::role('odontologo')->orderBy('name')->get()
@@ -48,6 +53,7 @@ class CitaController extends Controller
 
     public function store(Request $request)
     {
+        // Validacion base de datos obligatorios y formatos de hora.
         $data = $request->validate([
             'paciente_id'   => ['required', 'exists:pacientes,id'],
             'odontologo_id' => ['required', 'exists:users,id'],
@@ -64,9 +70,11 @@ class CitaController extends Controller
         $fin    = $data['hora_fin'];
         $docId  = $data['odontologo_id'];
 
+        // Carbon usa domingo=0; el sistema guarda los dias como 1..7.
         $dow0   = Carbon::parse($fecha)->dayOfWeek; // 0..6 (0=domingo)
         $dia1a7 = $dow0 === 0 ? 7 : $dow0;
 
+        // Verifica que la cita caiga dentro del horario fijo del odontologo.
         $bloque = OdontologoDisponibilidad::where('odontologo_id', $docId)
             ->where('dia_semana', $dia1a7)
             ->first();
@@ -77,6 +85,7 @@ class CitaController extends Controller
             ]);
         }
 
+        // Impide reservar si el odontologo tiene una ausencia registrada.
         $ausente = OdontologoAusencia::where('odontologo_id', $docId)
             ->whereDate('fecha_inicio', '<=', $fecha)
             ->whereDate('fecha_fin',    '>=', $fecha)
@@ -88,6 +97,7 @@ class CitaController extends Controller
             ]);
         }
 
+        // Detecta cruce de horarios con otras citas del mismo odontologo.
         $ocupado = Cita::where('odontologo_id', $docId)
             ->whereDate('fecha', $fecha)
             ->where(function ($q) use ($inicio, $fin) {
@@ -102,6 +112,7 @@ class CitaController extends Controller
             ]);
         }
 
+        // Compatibilidad con un posible scope/helper seSolapa definido en el modelo.
         if (method_exists(Cita::class, 'seSolapa')) {
             $choque = Cita::seSolapa($docId, $fecha, $inicio, $fin)->exists();
             if ($choque) {
@@ -119,6 +130,7 @@ class CitaController extends Controller
 
     public function edit(Cita $cita)
     {
+        // Carga listas auxiliares para editar la cita seleccionada.
         $pacientes   = Paciente::orderBy('apellido')->orderBy('nombre')->get();
         $odontologos = class_exists(\Spatie\Permission\Models\Role::class)
             ? User::role('odontologo')->orderBy('name')->get()
@@ -129,6 +141,7 @@ class CitaController extends Controller
 
     public function update(Request $request, Cita $cita)
     {
+        // Usa reglas similares al registro, pero excluye la cita actual al revisar cruces.
         $data = $request->validate([
             'paciente_id'   => ['required', 'exists:pacientes,id'],
             'odontologo_id' => ['required', 'exists:users,id'],
@@ -193,12 +206,14 @@ class CitaController extends Controller
 
     public function destroy(Cita $cita)
     {
+        // Borra la cita indicada y vuelve al listado anterior.
         $cita->delete();
         return back()->with('ok', '🗑️ Cita eliminada correctamente.');
     }
 
     public function reprogram(Request $request, Cita $cita)
     {
+        // Solo cambia fecha y horas, manteniendo paciente y odontologo.
         $data = $request->validate([
             'fecha'       => ['required', 'date'],
             'hora_inicio' => ['required', 'date_format:H:i'],
@@ -209,6 +224,7 @@ class CitaController extends Controller
         $inicio = $data['hora_inicio'];
         $fin    = $data['hora_fin'];
 
+        // Evita que la nueva hora se cruce con otra cita del mismo odontologo.
         $ocupado = Cita::where('odontologo_id', $cita->odontologo_id)
             ->whereDate('fecha', $fecha)
             ->where('id', '<>', $cita->id)
@@ -231,12 +247,14 @@ class CitaController extends Controller
 
     public function cancel(Cita $cita)
     {
+        // Cancelar no elimina la cita; conserva el historial cambiando el estado.
         $cita->update(['estado' => 'cancelada']);
         return back()->with('ok', '⚠️ Cita cancelada correctamente.');
     }
 
     public function checkin(Cita $cita)
     {
+        // Marca que el paciente llego a la cita.
         $cita->update(['estado' => \App\Models\Cita::EST_CHECKIN ?? 'checkin']);
         return back()->with('ok', '✅ Check-in registrado.');
     }
@@ -244,6 +262,7 @@ class CitaController extends Controller
     // ✅ Atender: crear historia si no existe; si existe, ir a Nota clínica
     public function atender(Cita $cita)
     {
+        // La atencion parte desde el paciente asociado a la cita.
         $paciente = $cita->paciente;
 
         if (!$paciente) {
@@ -271,6 +290,7 @@ class CitaController extends Controller
     {
         try {
             // Acepta inicio/fin o hora_inicio/hora_fin
+            // Acepta inicio/fin o hora_inicio/hora_fin para facilitar llamadas desde JS.
             $inicio = $request->input('inicio', $request->input('hora_inicio'));
             $fin    = $request->input('fin',    $request->input('hora_fin'));
             $request->merge(['inicio' => $inicio, 'fin' => $fin]);
@@ -284,6 +304,7 @@ class CitaController extends Controller
             $fecha  = $request->fecha;
 
             // Lista base de odontólogos (rol o perfil)
+            // Lista base de odontologos: por rol o por perfil creado.
             $odontologos = User::where(function ($q) {
                 if (class_exists(\Spatie\Permission\Models\Role::class)) {
                     $q->whereHas('roles', fn($r) => $r->where('name', 'odontologo'));
@@ -302,6 +323,7 @@ class CitaController extends Controller
                 $motivosNo = [];
 
                 // 1) Horario fijo
+                // 1) Horario fijo: debe trabajar ese dia y cubrir el rango solicitado.
                 $bloque = OdontologoDisponibilidad::where('odontologo_id', $doc->id)
                     ->where('dia_semana', $dia1a7)
                     ->first();
@@ -313,6 +335,7 @@ class CitaController extends Controller
                 }
 
                 // 2) Ausencia (rango)
+                // 2) Ausencia: bloquea al odontologo si la fecha cae en el rango.
                 $ausencia = OdontologoAusencia::where('odontologo_id', $doc->id)
                     ->whereDate('fecha_inicio', '<=', $fecha)
                     ->whereDate('fecha_fin',    '>=',  $fecha)
@@ -323,6 +346,7 @@ class CitaController extends Controller
                 }
 
                 // 3) Choque con otra cita
+                // 3) Choque con otra cita en el mismo intervalo.
                 $ocupado = Cita::where('odontologo_id', $doc->id)
                     ->whereDate('fecha', $fecha)
                     ->where(function ($q) use ($inicio, $fin) {
@@ -336,6 +360,7 @@ class CitaController extends Controller
                 }
 
                 // 4) Asistentes (vía perfil)
+                // 4) Asistentes asignados al odontologo mediante su perfil.
                 $asistentes = [];
                 $profile = $doc->odontologoProfile()->first();
                 if ($profile) {
