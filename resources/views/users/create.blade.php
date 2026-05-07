@@ -190,6 +190,18 @@
         <form class="glass card" method="POST" action="{{ route('users.store') }}" autocomplete="off">
             @csrf
 
+            @if ($errors->any())
+                <div
+                    style="max-width:600px; margin:0 auto 16px; padding:12px 14px; border-radius:12px; border:1px solid rgba(248,113,113,.45); background:rgba(127,29,29,.35); color:#fecaca;">
+                    <strong>No se pudo guardar el usuario.</strong>
+                    <ul style="margin:8px 0 0; padding-left:18px">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <div style="display:grid; grid-template-columns:1fr; gap:14px; max-width:600px; margin:auto">
                 <div>
                     <label for="name">Nombre</label>
